@@ -1,0 +1,8 @@
+Visit this link - https://github.com/mjakeman/extension-manager?tab=readme-ov-file
+Visit this link - https://flathub.org/apps/com.mattjakeman.ExtensionManager
+
+Run this command - 
+1. flatpak install flathub com.mattjakeman.ExtensionManager
+2. flatpak run com.mattjakeman.ExtensionManager
+
+Click on Browse and search for "Allow Locked Remote Desktop" and install.
