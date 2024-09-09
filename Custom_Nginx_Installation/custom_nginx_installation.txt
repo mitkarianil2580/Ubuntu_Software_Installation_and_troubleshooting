@@ -1,0 +1,57 @@
+vi nginx_install.sh
+
+#!/bin/bash
+
+# Update package lists
+apt-get update
+
+# Install nginx
+apt-get install nginx -y
+
+# Download and extract the specified Nginx version
+wget http://nginx.org/download/nginx-1.25.3.tar.gz
+tar -zvxf nginx-1.25.3.tar.gz
+cd nginx-1.25.3/
+
+# Install build essentials
+apt-get install build-essential -y
+
+# Install necessary libraries
+apt-get install libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev -y
+
+# Configure Nginx with specified options
+./configure --sbin-path=/usr/local/nginx/nginx \
+--conf-path=/usr/local/nginx/nginx.conf \
+--pid-path=/usr/local/nginx/nginx.pid \
+--with-pcre \
+--with-http_ssl_module \
+--with-stream \
+--with-http_auth_request_module
+
+# Compile and install Nginx
+make
+make install
+
+# Navigate to Nginx directory and remove the default HTML directory
+cd /usr/local/nginx/
+rm -rf html
+
+# Disable and stop the default Nginx service managed by systemd
+systemctl disable nginx
+systemctl stop nginx
+
+# Add Nginx binary to the system PATH
+echo 'export PATH="/usr/local/nginx:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# Ensure Nginx is executable
+chmod +x /usr/local/nginx/nginx
+
+# Add Nginx start/stop command to crontab for execution on system reboot
+(crontab -l 2>/dev/null; echo "@reboot /usr/local/nginx/nginx -s stop; /usr/local/nginx/nginx") | crontab -
+
+echo "Nginx custom installation and configuration completed."
+
+chmod +x nginx_install.sh
+
+bash nginx_install.sh
